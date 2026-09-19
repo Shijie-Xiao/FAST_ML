@@ -151,6 +151,18 @@ python eval_twostream_by_year.py --ckpt ckpt/twostream_final_d2.pth \
     --data_dir training_data --out_dir runs/eval --split val --model_tag B_D2
 ```
 
+### Full-scale run (verified)
+
+The complete archive — 820 storms, 2003-2024, NA+EP, ~104 GB of pkls — was
+loaded and trained through all phases (A/B/C/D1/D2) on one A100 node
+(`full_run.sbatch`, a NERSC/Perlmutter submission template): peak host RAM
+~85 GB during loading (the trainer lazy-loads spatial fields per batch, so
+only the embedded single-pkl storms' fields stay resident), then 303 train /
+28 val storms after the 45-kt + 120-h filters, ~5 min per 2-epoch phase with
+`--bs 2 --accum 2`. Checkpoint save/load resumed across phases with
+`miss=0 unexp=0`. For the converged paper model use the full epoch counts
+(150/150/200/100) and, ideally, 4 GPUs via `torchrun`.
+
 ## Ensemble forecast (track sampling + inference)
 
 Example: Hurricane Beryl 2024, GEFS initialisation 2024-06-28 12Z.

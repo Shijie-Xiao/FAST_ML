@@ -38,3 +38,6 @@ training/_gefs_nc/
 training/*.log
 training/ckpts/
 training/vortex_inversion/__pycache__/
+
+# Full-run slurm log (verification runs)
+training/full_run_*.log
