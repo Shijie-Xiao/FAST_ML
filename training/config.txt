@@ -1,0 +1,11 @@
+# Simple config for IBtracs_datasets.py
+basins=ALL
+year_start=2003
+year_end=2025
+output_dir=data
+era5_root=/global/cfs/cdirs/m5011/Jay/ERA5
+clear_first=true
+# parallel workers for scripts/parallel_prepare.py (0=auto)
+workers=8
+# optional: local ibtracs csv path; empty means auto-download latest
+ibtracs_csv=

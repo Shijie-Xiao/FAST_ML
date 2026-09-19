@@ -21,3 +21,20 @@ data/spatial_stats_2003_2021.pkl
 # README.md are copied into img/ and tracked; everything else is local-only.
 results/
 
+
+# ── training/ pipeline (JAMES reviewer release) ──────────────────────────────
+# Large inputs and outputs of the training pipeline are local-only.
+training/data/
+training/training_data/
+training/ensemble_tracks/
+training/ensemble_runs/
+training/ensemble_data/
+training/runs/
+training/wandb/
+training/track_model/processed/
+training/track_model/__pycache__/
+training/fast_ode/__pycache__/
+training/_gefs_nc/
+training/*.log
+training/ckpts/
+training/vortex_inversion/__pycache__/
