@@ -179,7 +179,12 @@ def load_1km_storms(data_dir='training_data', seq_len=TARGET_SEQ_LEN,
     ty = set(train_years or TRAIN_YEARS)
     vy = set(val_years   or VAL_YEARS)
     tey= set(test_years  or TEST_YEARS)
-    inc= set(storm_include) if storm_include else None
+    # storm_include: CLI passes a comma-separated string ("2024/AL262024_..._BERYL"),
+    # the Python API a list; both become a set of "year/storm_dir" keys here.
+    if isinstance(storm_include, str):
+        inc = set(x.strip() for x in storm_include.split(',') if x.strip()) or None
+    else:
+        inc = set(storm_include) if storm_include else None
     # storm_exclude 可以是文件路径（逐行读取）或 list/set（直接用）
     exc: set = set()
     if storm_exclude:

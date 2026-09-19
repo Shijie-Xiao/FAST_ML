@@ -38,7 +38,7 @@ SYNTH_ROOT = config.PROJECT_ROOT / "ensemble_tracks_gefs"
 
 def _bt_csv_for(case, year, name, basin):
     """Best-track CSV for a GEFS case: data/{basin}/{year}/{SID}_{NAME}/..."""
-    for sub in (config.PROJECT_ROOT / "data" / basin / str(year)).iterdir():
+    for sub in (config.BEST_TRACK_DIR.parent / basin / str(year)).iterdir():
         if not sub.is_dir() or name.upper() not in sub.name.upper():
             continue
         csv = sub / "track_intensity_6h.csv"

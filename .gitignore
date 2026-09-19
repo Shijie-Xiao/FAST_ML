@@ -31,7 +31,7 @@ training/ensemble_runs/
 training/ensemble_data/
 training/runs/
 training/wandb/
-training/track_model/processed/
+training/track_model/processed*/
 training/track_model/__pycache__/
 training/fast_ode/__pycache__/
 training/_gefs_nc/
