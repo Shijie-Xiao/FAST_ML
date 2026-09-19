@@ -177,31 +177,34 @@ def _open_sfc(ts, cache, cfg):
     # New layout: SFC/{YYYYMM}/*.nc
     sfc_dir = os.path.join(sfc_root, ym)
     flat = False
+    # Glob patterns anchor the month with dots: a plain '*{ym}*' also matches
+    # e.g. 2012020100... for ym=202010 (the '202010' substring sits inside the
+    # day field), silently picking the wrong month's file.
     if os.path.isdir(sfc_dir):
-        sst_p = _first_glob(os.path.join(sfc_dir, f'*{SFC_VAR_CODE["SSTK"]}*{ym}*.nc'))
-        msl_p = _first_glob(os.path.join(sfc_dir, f'*{SFC_VAR_CODE["MSL"]}*{ym}*.nc'))
+        sst_p = _first_glob(os.path.join(sfc_dir, f'*{SFC_VAR_CODE["SSTK"]}*.{ym}*.nc'))
+        msl_p = _first_glob(os.path.join(sfc_dir, f'*{SFC_VAR_CODE["MSL"]}*.{ym}*.nc'))
     elif os.path.isdir(os.path.join(sfc_root, 'SSTK')):
         # Old layout: ERA5/{BASIN}/SSTK/*.nc and ERA5/{BASIN}/MSL/*.nc
-        sst_p = _first_glob(os.path.join(sfc_root, 'SSTK', f'*SSTK*{ym}*.nc')) or \
-                _first_glob(os.path.join(sfc_root, 'SSTK', f'*sstk*{ym}*.nc'))
-        msl_p = _first_glob(os.path.join(sfc_root, 'MSL', f'*MSL*{ym}*.nc')) or \
-                _first_glob(os.path.join(sfc_root, 'MSL', f'*msl*{ym}*.nc'))
+        sst_p = _first_glob(os.path.join(sfc_root, 'SSTK', f'*SSTK*.{ym}*.nc')) or \
+                _first_glob(os.path.join(sfc_root, 'SSTK', f'*sstk*.{ym}*.nc'))
+        msl_p = _first_glob(os.path.join(sfc_root, 'MSL', f'*MSL*.{ym}*.nc')) or \
+                _first_glob(os.path.join(sfc_root, 'MSL', f'*msl*.{ym}*.nc'))
     else:
         # Flat layout: monthly files directly in SFC/ (e.g. ERA5/2025/SFC/*.nc)
         flat = True
-        sst_p = _first_glob(os.path.join(sfc_root, f'*{SFC_VAR_CODE["SSTK"]}*{ym}*.nc'))
-        msl_p = _first_glob(os.path.join(sfc_root, f'*{SFC_VAR_CODE["MSL"]}*{ym}*.nc'))
+        sst_p = _first_glob(os.path.join(sfc_root, f'*{SFC_VAR_CODE["SSTK"]}*.{ym}*.nc'))
+        msl_p = _first_glob(os.path.join(sfc_root, f'*{SFC_VAR_CODE["MSL"]}*.{ym}*.nc'))
     if not sst_p or not msl_p:
         cache[k] = None
         return None
     datasets = [xr.open_dataset(sst_p), xr.open_dataset(msl_p)]
     # Try loading BLH and SP if available
     if os.path.isdir(sfc_dir):
-        blh_p = _first_glob(os.path.join(sfc_dir, f'*159_blh*{ym}*.nc'))
+        blh_p = _first_glob(os.path.join(sfc_dir, f'*159_blh*.{ym}*.nc'))
     elif flat:
-        blh_p = _first_glob(os.path.join(sfc_root, f'*159_blh*{ym}*.nc'))
+        blh_p = _first_glob(os.path.join(sfc_root, f'*159_blh*.{ym}*.nc'))
     else:
-        blh_p = _first_glob(os.path.join(sfc_root, 'BLH', f'*BLH*{ym}*.nc'))
+        blh_p = _first_glob(os.path.join(sfc_root, 'BLH', f'*BLH*.{ym}*.nc'))
     if blh_p:
         datasets.append(xr.open_dataset(blh_p))
     ds = xr.merge(datasets, compat='override')

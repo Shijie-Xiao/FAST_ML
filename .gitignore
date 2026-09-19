@@ -41,3 +41,4 @@ training/vortex_inversion/__pycache__/
 
 # Full-run slurm log (verification runs)
 training/full_run_*.log
+data/training_archive/

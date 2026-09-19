@@ -62,6 +62,31 @@ training/
 All `data/`, `training_data/`, `ensemble_*`, `runs/`, `ckpts/` outputs are
 gitignored — only code and small static inputs are tracked.
 
+## Getting the prepared training data (one command)
+
+The complete prepared training set — 820 storms, 2003-2024, NA+EP, ~104 GB
+unpacked — is hosted on Google Drive as a split tar.gz. One command verifies
+every part (size + SHA-256), merges, extracts into `training/training_data/`
+and cleans up:
+
+```bash
+pip install gdown                       # if not installed
+python scripts/download_training_data.py            # fetch + deploy
+python scripts/download_training_data.py --verify   # check what is present
+```
+
+Deployed layout (what every stage below expects):
+
+```
+training/training_data/{year}/{ATCF_ID}_{basin}_{NAME}/
+    {STORM}_dataset.pkl            always (scalars, trajectory, chi/S refs)
+    {STORM}_spatial_1000km.pkl     381 old-layout storms (72x72 fields);
+                                   the other 439 embed them in dataset.pkl
+```
+
+Preparing it from raw sources instead (ERA5 archive needed): Stage 0 + 1 +
+1b below, roughly 30 min per storm per core.
+
 ## Stage 0 — IBTrACS best tracks
 
 ```bash
@@ -237,3 +262,6 @@ from `fhlo` to `free` initialisation with a warning.
 * The vortex surgery (`vortex_inversion/`) requires `pyamg` and `pyshtools`.
 * The checkpoint in `ckpt/` is identical to the one released in the inference
   repo root (`ckpt/`).
+* The complete prepared training data behind the paper (820 storms,
+  2003-2024) is downloadable via `scripts/download_training_data.py`; see
+  "Getting the prepared training data" above.
